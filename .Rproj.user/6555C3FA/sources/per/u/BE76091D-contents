@@ -1,0 +1,52 @@
+# Load packages and Data --------------------------------------------------
+library(tidyverse)
+library(unglue)
+
+stacks_raw <- read_fwf("data/d05.txt", n_max = 8)
+
+stacks <- 
+  stacks_raw %>% 
+  arrange(desc(row_number())) %>% 
+  as.list() %>% 
+  map(~.x[!is.na(.x)])
+
+procedures_raw <- read_lines("data/d05.txt", skip = 10)
+ 
+procedures <- 
+  procedures_raw %>% 
+  unglue_data(
+    patterns = "move {qty} from {source} to {destination}",
+    convert = TRUE
+    )
+
+# Define helpers ----------------------------------------------------------
+
+zzz <- list(
+  a = letters[1:2],
+  b = letters[1:5]
+  )
+
+before_source <- zzz[["a"]]
+before_destination <- zzz[["b"]]
+# move 1
+after_source <- before_source[-length(before_source)]
+after_destination <- append(before_destination, before_source[length(before_source)])
+
+# move 2
+for (i in seq_len(1)) {
+  before_source <- zzz[["a"]]
+  before_destination <- zzz[["b"]]
+  zzz[["a"]] <- before_source[-length(before_source)]
+  zzz[["b"]] <- append(before_destination, before_source[length(before_source)])
+}
+?length
+zzz
+
+# PART I ------------------------------------------------------------------
+
+# After the rearrangement procedure completes, what crate ends up on top of each stack?
+
+
+# PART II -----------------------------------------------------------------
+
+
